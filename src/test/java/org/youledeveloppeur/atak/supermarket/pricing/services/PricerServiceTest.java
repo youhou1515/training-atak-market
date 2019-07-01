@@ -47,6 +47,7 @@ public class PricerServiceTest {
 	@After
 	public void after() {
 		pricerService.clearPromotionThreeForADollar();
+		pricerService.clearPromotionBuyTwoGetOneFree();
 	}
 	
 	/**
@@ -358,7 +359,7 @@ public class PricerServiceTest {
 	 * 2.90 euro/kg, get the price for 1.5kg which is 4.35 euros.	
 	 */
 	@Test
-	public void getPriceFromProductWeighedTest4B() {
+	public void getPriceFromListProductWeighedTest4B() {
 		
 		// GIVEN : 2.90 eur/kg the apples
 		String apple = "apple";
@@ -382,7 +383,7 @@ public class PricerServiceTest {
 	 * total 1.50 + 79.99 + 4.35 = 85.84 euros
 	 */
 	@Test
-	public void getPriceFromProductWeighedTest4C() {
+	public void getPriceFromListProductMixedTest4C() {
 		
 		// GIVEN : 2.90 eur/kg the apples
 		String apple = "apple";
@@ -469,7 +470,7 @@ public class PricerServiceTest {
 	
 	/**
 	 * promotion : buy 2 bottle of water of Evian, get 1 free
-	 * buy 4 bottles of water of Evian (.65 euros the bottle), the amount is 1.95 euros.
+	 * buy 4 bottles of water of Evian (.65 euros the bottle), the amount is 1.95 euros, you pay 3 bottles of water in total (you get 1 free)
 	 */
 	@Test
 	public void buyTwoGetOneFreeTest5C() {
@@ -492,7 +493,7 @@ public class PricerServiceTest {
 		// TEST
 		// get the promotion price 
 		BigDecimal resultExpected = new BigDecimal(1.95);
-		assertEquals(0, resultExpected.compareTo(resultActual));	
+		assertEquals(0, resultExpected.setScale(2, RoundingMode.HALF_UP).compareTo(resultActual.setScale(2, RoundingMode.HALF_UP)));	
 	}
 
 }
