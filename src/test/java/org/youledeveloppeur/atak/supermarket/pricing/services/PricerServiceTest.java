@@ -6,19 +6,46 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.youledeveloppeur.atak.supermarket.pricing.domain.Product;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class PricerServiceTest {
+	
+	@Rule 
+	public TestRule watchman = new TestWatcher() {
+	   protected void starting(Description description) {
+		   log.info("Starting test: " + description.getMethodName());
+	   }
+	
+	};
 	
 	@Autowired
 	private PricerService pricerService;
+	
+	@Before
+	public void before() {
+		
+	}
+	
+	@After
+	public void after() {
+		pricerService.clearPromotionThreeForADollar();
+	}
 	
 	/**
 	 * get the price from the product
@@ -105,13 +132,15 @@ public class PricerServiceTest {
 		
 		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3);
 		
+		pricerService.addPromotionThreeForADollar(blackPen);
+		
 		// WHEN
 		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
 		
 		// TEST
 		// get the promotion price
 		BigDecimal resultExpected = BigDecimal.ONE;
-		assertEquals(resultExpected, resultActual);		
+		assertEquals(0, resultExpected.compareTo(resultActual));		
 	}
 	
 	/**
@@ -131,13 +160,15 @@ public class PricerServiceTest {
 		
 		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3, productBlackPen4);
 		
+		pricerService.addPromotionThreeForADollar(blackPen);
+		
 		// WHEN
 		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
 		
 		// TEST
 		// get the promotion price
 		BigDecimal resultExpected = BigDecimal.ONE.add(priceBlackPen);
-		assertEquals(resultExpected, resultActual);		
+		assertEquals(0, resultExpected.compareTo(resultActual));			
 	}
 	
 	/**
@@ -158,13 +189,15 @@ public class PricerServiceTest {
 		
 		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3, productBlackPen4, productBlackPen5);
 		
+		pricerService.addPromotionThreeForADollar(blackPen);
+		
 		// WHEN
 		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
 		
 		// TEST
 		// get the promotion price
 		BigDecimal resultExpected = BigDecimal.ONE.add(priceBlackPen).add(priceBlackPen);
-		assertEquals(resultExpected, resultActual);		
+		assertEquals(0, resultExpected.compareTo(resultActual));		
 	}
 	
 	/**
@@ -186,13 +219,15 @@ public class PricerServiceTest {
 		
 		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3, productBlackPen4, productBlackPen5, productBlackPen6);
 		
+		pricerService.addPromotionThreeForADollar(blackPen);
+		
 		// WHEN
 		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
 		
 		// TEST
 		// get the promotion price
 		BigDecimal resultExpected = BigDecimal.ONE.add(BigDecimal.ONE);
-		assertEquals(resultExpected, resultActual);		
+		assertEquals(0, resultExpected.compareTo(resultActual));		
 	}
 	
 	/**
@@ -213,7 +248,10 @@ public class PricerServiceTest {
 		Product productBlackPen6 = new Product(blackPen, priceBlackPen);
 		Product productBlackPen7 = new Product(blackPen, priceBlackPen);
 		
-		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3, productBlackPen4, productBlackPen5, productBlackPen6, productBlackPen7);
+		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3, 
+				productBlackPen4, productBlackPen5, productBlackPen6, productBlackPen7);
+		
+		pricerService.addPromotionThreeForADollar(blackPen);
 		
 		// WHEN
 		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
@@ -221,7 +259,76 @@ public class PricerServiceTest {
 		// TEST
 		// get the promotion price
 		BigDecimal resultExpected = BigDecimal.ONE.add(BigDecimal.ONE).add(priceBlackPen);
-		assertEquals(resultExpected, resultActual);		
+		assertEquals(0, resultExpected.compareTo(resultActual));	
+	}
+	
+	/**
+	 * promotion 3 for a dollar : black pen + rubber
+	 * sum 4 black pens + 3 rubber => 1.45 + 1 = 2.45 
+	 */
+	@Test
+	public void getThreeForADollarTest3f() {
+		
+		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
+		String blackPen = "black pen";
+		BigDecimal priceBlackPen = new BigDecimal(0.45);
+		Product productBlackPen1 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen2 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen3 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen4 = new Product(blackPen, priceBlackPen);
+		
+		String rubber = "rubber";
+		BigDecimal priceRubber = new BigDecimal(0.50);
+		Product productRubber1 = new Product(rubber, priceRubber);
+		Product productRubber2 = new Product(rubber, priceRubber);
+		Product productRubber3 = new Product(rubber, priceRubber);
+		
+		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3, productBlackPen4, 
+				productRubber1, productRubber2, productRubber3);
+		
+		pricerService.addPromotionThreeForADollar(blackPen);
+		pricerService.addPromotionThreeForADollar(rubber);
+				
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = BigDecimal.ONE.add(priceBlackPen).add(BigDecimal.ONE);
+		assertEquals(0, resultExpected.compareTo(resultActual));	
+	}
+	
+	/**
+	 * promotion 3 for a dollar : black pen + rubber
+	 * sum 4 black pens + 3 rubber => 1.45 + 1 = 2.45 
+	 */
+	@Test
+	public void getThreeForADollarTest3g() {
+		
+		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
+		String blackPen = "black pen";
+		BigDecimal priceBlackPen = new BigDecimal(0.45);
+		Product productBlackPen1 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen2 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen3 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen4 = new Product(blackPen, priceBlackPen);
+		
+		String chair = "chair";
+		BigDecimal priceChair = new BigDecimal(79.99);
+		Product productChair1 = new Product(chair, priceChair);
+		
+		List<Product> listProduct = Arrays.asList(productBlackPen1, productBlackPen2, productBlackPen3, productBlackPen4, 
+				productChair1);
+		
+		pricerService.addPromotionThreeForADollar(blackPen);
+				
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = BigDecimal.ONE.add(priceBlackPen).add(priceChair);
+		assertEquals(0, resultExpected.compareTo(resultActual));	
 	}
 
 }
