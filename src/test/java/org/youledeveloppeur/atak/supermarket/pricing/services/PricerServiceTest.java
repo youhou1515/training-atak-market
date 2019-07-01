@@ -358,7 +358,7 @@ public class PricerServiceTest {
 	 * 2.90 euro/kg, get the price for 1.5kg which is 4.35 euros.	
 	 */
 	@Test
-	public void getPriceFromListProductWeighedTest4B() {
+	public void getPriceFromProductWeighedTest4B() {
 		
 		// GIVEN : 2.90 eur/kg the apples
 		String apple = "apple";
@@ -382,7 +382,7 @@ public class PricerServiceTest {
 	 * total 1.50 + 79.99 + 4.35 = 85.84 euros
 	 */
 	@Test
-	public void getPriceFromListProductMixedTest4C() {
+	public void getPriceFromProductWeighedTest4C() {
 		
 		// GIVEN : 2.90 eur/kg the apples
 		String apple = "apple";
