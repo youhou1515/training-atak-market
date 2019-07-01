@@ -7,8 +7,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.youledeveloppeur.atak.supermarket.pricing.domain.Product;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class PricerServiceTest {
+	
+	@Autowired
+	private PricerService pricerService;
 	
 	/**
 	 * get the price from the product
@@ -30,7 +40,7 @@ public class PricerServiceTest {
 	}
 	
 	/**
-	 * add 1 simple product on the list and sum it
+	 * add 1 simple product on the list and sum it, get the result the amount
 	 */
 	@Test
 	public void getPriceFromListProductTest2a() {
@@ -53,7 +63,7 @@ public class PricerServiceTest {
 	}
 	
 	/**
-	 * add 2 simple products on the list and sum it
+	 * add 2 simple products on the list and sum it, get the result the amount
 	 */
 	@Test
 	public void getPriceFromListProductTest2b() {
