@@ -495,5 +495,114 @@ public class PricerServiceTest {
 		BigDecimal resultExpected = new BigDecimal(1.95);
 		assertEquals(0, resultExpected.setScale(2, RoundingMode.HALF_UP).compareTo(resultActual.setScale(2, RoundingMode.HALF_UP)));	
 	}
+	
+	/**
+	 * promotion : buy 2 bottle of water of Evian, get 1 free
+	 * buy 5 bottles of water of Evian (.65 euros the bottle), the amount is 2.60 euros, you pay 4 bottles of water in total (you get 1 free)
+	 */
+	@Test
+	public void buyTwoGetOneFreeTest5D() {
+		
+		// GIVEN : buy 2 bootles of water, get 1 free
+		String bottleOfWaterEvian = "waterEvian";
+		BigDecimal priceBottleOfWaterEvian = new BigDecimal(.65); // 
+		Product productBottleOfWaterEvian1 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian2 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian3 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian4 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian5 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		
+		List<Product> listProduct = Arrays.asList(productBottleOfWaterEvian1, productBottleOfWaterEvian2, productBottleOfWaterEvian3, productBottleOfWaterEvian4, productBottleOfWaterEvian5);
+		
+		pricerService.addPromotionBuyTwoGetOneFree(bottleOfWaterEvian);
+		
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = new BigDecimal(2.60);
+		assertEquals(0, resultExpected.setScale(2, RoundingMode.HALF_UP).compareTo(resultActual.setScale(2, RoundingMode.HALF_UP)));	
+	}
+	
+	/**
+	 * promotion : buy 2 bottle of water of Evian, get 1 free
+	 * buy 6 bottles of water of Evian (.65 euros the bottle), the amount is 2.60 euros, you pay 4 bottles of water in total (you get 2 free)
+	 */
+	@Test
+	public void buyTwoGetOneFreeTest5E() {
+		
+		// GIVEN : buy 2 bootles of water, get 1 free
+		String bottleOfWaterEvian = "waterEvian";
+		BigDecimal priceBottleOfWaterEvian = new BigDecimal(.65); // 
+		Product productBottleOfWaterEvian1 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian2 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian3 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian4 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian5 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian6 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		
+		List<Product> listProduct = Arrays.asList(productBottleOfWaterEvian1, productBottleOfWaterEvian2, productBottleOfWaterEvian3, 
+				productBottleOfWaterEvian4, productBottleOfWaterEvian5, productBottleOfWaterEvian6);
+		
+		pricerService.addPromotionBuyTwoGetOneFree(bottleOfWaterEvian);
+		
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = new BigDecimal(2.60);
+		assertEquals(0, resultExpected.setScale(2, RoundingMode.HALF_UP).compareTo(resultActual.setScale(2, RoundingMode.HALF_UP)));	
+	}
+	
+	/**
+	 * promotion : 3 for 1 doller for black pens
+	 * promotion : buy 2 bottle of water of Evian, get 1 free
+	 * list of products to buy : 4 bottles of water Evian (.65 a bottle) + 4 black pens (.45 a pen) + 1 kg of apple (2.90/kg) + 1 chair (79.99)
+	 * result = 1.95 + 1.45 + 2.90 + 79.99 = 86.29
+	 */
+	@Test
+	public void mixedProductsTestA() {
+		
+		// GIVEN : 
+		// promotion 2 : buy 2 bootles of water, get 1 free
+		String bottleOfWaterEvian = "waterEvian";
+		BigDecimal priceBottleOfWaterEvian = new BigDecimal(.65); // 
+		Product productBottleOfWaterEvian1 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian2 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian3 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		Product productBottleOfWaterEvian4 = new Product(bottleOfWaterEvian, priceBottleOfWaterEvian);
+		
+		// promotion 1 : black pen
+		String blackPen = "black pen";
+		BigDecimal priceBlackPen = new BigDecimal(0.45);
+		Product productBlackPen1 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen2 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen3 = new Product(blackPen, priceBlackPen);
+		Product productBlackPen4 = new Product(blackPen, priceBlackPen);
+		
+		String chair = "chair";
+		BigDecimal priceChair = new BigDecimal(79.99);
+		Product productChair = new Product(chair, priceChair);
+		
+		String apple = "apple";
+		BigDecimal priceApplePerKg = new BigDecimal(2.90); // 2.90 euros/kg
+		BigDecimal quantity = BigDecimal.ONE; // per kg
+		Product productApple = new ProductWeighed(apple, priceApplePerKg, quantity);
+		
+		List<Product> listProduct = Arrays.asList(productBottleOfWaterEvian1, productBottleOfWaterEvian2, productBottleOfWaterEvian3, productBottleOfWaterEvian4
+				, productBlackPen1, productBlackPen2, productBlackPen3, productBlackPen4, productChair, productApple);	
+		pricerService.addPromotionBuyTwoGetOneFree(bottleOfWaterEvian);
+		pricerService.addPromotionThreeForADollar(blackPen);
+			
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = new BigDecimal(86.29);
+		assertEquals(0, resultExpected.setScale(2, RoundingMode.HALF_UP).compareTo(resultActual.setScale(2, RoundingMode.HALF_UP)));	
+	}
 
 }
