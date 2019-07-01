@@ -3,6 +3,7 @@ package org.youledeveloppeur.atak.supermarket.pricing.services;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.youledeveloppeur.atak.supermarket.pricing.domain.Product;
+import org.youledeveloppeur.atak.supermarket.pricing.domain.ProductWeighed;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,7 +53,7 @@ public class PricerServiceTest {
 	 * get the price from the product
 	 */
 	@Test
-	public void getPriceFromProductTest1a() {
+	public void getPriceFromProductTest1A() {
 		
 		// GIVEN
 		String chair = "chair";
@@ -70,7 +72,7 @@ public class PricerServiceTest {
 	 * add 1 simple product on the list and sum it, get the result the amount
 	 */
 	@Test
-	public void getPriceFromListProductTest2a() {
+	public void getPriceFromListProductTest2A() {
 		
 		// GIVEN		
 		String chair = "chair";
@@ -93,7 +95,7 @@ public class PricerServiceTest {
 	 * add 2 simple products on the list and sum it, get the result the amount
 	 */
 	@Test
-	public void getPriceFromListProductTest2b() {
+	public void getPriceFromListProductTest2B() {
 		
 		// GIVEN
 		String blackPen = "black pen";
@@ -121,7 +123,7 @@ public class PricerServiceTest {
 	 * get the price for 3 black pens which is 1 dollar
 	 */
 	@Test
-	public void getThreeForADollarTest3a() {
+	public void getThreeForADollarTest3A() {
 		
 		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
 		String blackPen = "black pen";
@@ -148,7 +150,7 @@ public class PricerServiceTest {
 	 * get the price for 4 black pens which is 1 dollar + price of 1 black pen 
 	 */
 	@Test
-	public void getThreeForADollarTest3b() {
+	public void getThreeForADollarTest3B() {
 		
 		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
 		String blackPen = "black pen";
@@ -176,7 +178,7 @@ public class PricerServiceTest {
 	 * get the price for 5 black pens which is 1 dollar + price of 2 black pen 
 	 */
 	@Test
-	public void getThreeForADollarTest3c() {
+	public void getThreeForADollarTest3C() {
 		
 		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
 		String blackPen = "black pen";
@@ -205,7 +207,7 @@ public class PricerServiceTest {
 	 * get the price for 6 black pens which is 2 dollar
 	 */
 	@Test
-	public void getThreeForADollarTest3d() {
+	public void getThreeForADollarTest3D() {
 		
 		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
 		String blackPen = "black pen";
@@ -235,7 +237,7 @@ public class PricerServiceTest {
 	 * get the price for 7 black pens which is 2 dollar + price of 1 black pen
 	 */
 	@Test
-	public void getThreeForADollarTest3e() {
+	public void getThreeForADollarTest3E() {
 		
 		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
 		String blackPen = "black pen";
@@ -267,7 +269,7 @@ public class PricerServiceTest {
 	 * sum 4 black pens + 3 rubber => 1.45 + 1 = 2.45 
 	 */
 	@Test
-	public void getThreeForADollarTest3f() {
+	public void getThreeForADollarTest3F() {
 		
 		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
 		String blackPen = "black pen";
@@ -303,7 +305,7 @@ public class PricerServiceTest {
 	 * sum 4 black pens + 3 rubber => 1.45 + 1 = 2.45 
 	 */
 	@Test
-	public void getThreeForADollarTest3g() {
+	public void getThreeForADollarTest3G() {
 		
 		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
 		String blackPen = "black pen";
@@ -335,15 +337,13 @@ public class PricerServiceTest {
 	 * 2.90 euro/kg, get the price for 1kg	
 	 */
 	@Test
-	public void getPriceFromProductWeighedTest4a() {
+	public void getPriceFromProductWeighedTest4A() {
 		
-		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
+		// GIVEN : 2.90 eur/kg the apples
 		String apple = "apple";
 		BigDecimal priceApplePerKg = new BigDecimal(2.90); // 2.99 euros/kg
-		BigDecimal quantity = new BigDecimal(1.00); // per kg
+		BigDecimal quantity = BigDecimal.ONE; // per kg
 		Product productApple = new ProductWeighed(apple, priceApplePerKg, quantity);
-		
-		List<Product> listProduct = Arrays.asList(productApple);
 				
 		// WHEN
 		BigDecimal resultActual = pricerService.getPriceFromProduct(productApple);
@@ -355,12 +355,12 @@ public class PricerServiceTest {
 	}
 	
 	/**
-	 * 2.90 euro/kg, get the price for 1.5kg	
+	 * 2.90 euro/kg, get the price for 1.5kg which is 4.35 euros.	
 	 */
 	@Test
-	public void getPriceFromProductWeighedTest4b() {
+	public void getPriceFromListProductWeighedTest4B() {
 		
-		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
+		// GIVEN : 2.90 eur/kg the apples
 		String apple = "apple";
 		BigDecimal priceApplePerKg = new BigDecimal(2.90); // 2.99 euros/kg
 		BigDecimal quantity = new BigDecimal(1.5); // per kg
@@ -375,6 +375,43 @@ public class PricerServiceTest {
 		// get the promotion price 
 		BigDecimal resultExpected = priceApplePerKg.multiply(quantity);
 		assertEquals(0, resultExpected.compareTo(resultActual));	
+	}
+	
+	/**
+	 * add Promotion(4 rubber) + regular product(1 chair) + productWeighed(1.5 apple) in disorder 
+	 * total 1.50 + 79.99 + 4.35 = 85.84 euros
+	 */
+	@Test
+	public void getPriceFromListProductMixedTest4C() {
+		
+		// GIVEN : 2.90 eur/kg the apples
+		String apple = "apple";
+		BigDecimal priceApplePerKg = new BigDecimal(2.90); // 2.99 euros/kg
+		BigDecimal quantity = new BigDecimal(1.5); // per kg
+		Product productApple = new ProductWeighed(apple, priceApplePerKg, quantity);
+		
+		String rubber = "rubber";
+		BigDecimal priceRubber = new BigDecimal(0.50);
+		Product productRubber1 = new Product(rubber, priceRubber);
+		Product productRubber2 = new Product(rubber, priceRubber);
+		Product productRubber3 = new Product(rubber, priceRubber);
+		Product productRubber4 = new Product(rubber, priceRubber);
+		
+		pricerService.addPromotionThreeForADollar(rubber);
+		
+		String chair = "chair";
+		BigDecimal priceChair = new BigDecimal(79.99);
+		Product productChair = new Product(chair, priceChair);
+		
+		List<Product> listProduct = Arrays.asList(productRubber3, productApple, productRubber1, productRubber2, productChair, productRubber4);
+				
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = new BigDecimal(85.84);
+		assertEquals(0, resultExpected.setScale(2, RoundingMode.HALF_UP).compareTo(resultActual.setScale(2, RoundingMode.HALF_UP)));	
 	}
 
 }

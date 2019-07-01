@@ -9,7 +9,11 @@ import lombok.Data;
 @AllArgsConstructor
 public class Product {
 	
+	public Product() {}
+	
 	private String productName;
+	
+	// phase 3, since we can have productWeighed, productPrice can mean pricePerKg
 	private BigDecimal productPrice;
 
 }
