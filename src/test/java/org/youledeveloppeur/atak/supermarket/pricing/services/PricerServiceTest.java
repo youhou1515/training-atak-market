@@ -330,5 +330,51 @@ public class PricerServiceTest {
 		BigDecimal resultExpected = BigDecimal.ONE.add(priceBlackPen).add(priceChair);
 		assertEquals(0, resultExpected.compareTo(resultActual));	
 	}
+	
+	/**
+	 * 2.90 euro/kg, get the price for 1kg	
+	 */
+	@Test
+	public void getPriceFromProductWeighedTest4a() {
+		
+		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
+		String apple = "apple";
+		BigDecimal priceApplePerKg = new BigDecimal(2.90); // 2.99 euros/kg
+		BigDecimal quantity = new BigDecimal(1.00); // per kg
+		Product productApple = new ProductWeighed(apple, priceApplePerKg, quantity);
+		
+		List<Product> listProduct = Arrays.asList(productApple);
+				
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromProduct(productApple);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = priceApplePerKg.multiply(quantity);
+		assertEquals(0, resultExpected.compareTo(resultActual));	
+	}
+	
+	/**
+	 * 2.90 euro/kg, get the price for 1.5kg	
+	 */
+	@Test
+	public void getPriceFromProductWeighedTest4b() {
+		
+		// GIVEN : we have a promotion for the black pen : 3 for 1 dollar
+		String apple = "apple";
+		BigDecimal priceApplePerKg = new BigDecimal(2.90); // 2.99 euros/kg
+		BigDecimal quantity = new BigDecimal(1.5); // per kg
+		Product productApple = new ProductWeighed(apple, priceApplePerKg, quantity);
+		
+		List<Product> listProduct = Arrays.asList(productApple);
+				
+		// WHEN
+		BigDecimal resultActual = pricerService.getPriceFromListProduct(listProduct);
+		
+		// TEST
+		// get the promotion price 
+		BigDecimal resultExpected = priceApplePerKg.multiply(quantity);
+		assertEquals(0, resultExpected.compareTo(resultActual));	
+	}
 
 }
